@@ -34,13 +34,13 @@ export class taskController {
         return this.tasksService.getSingleTask(taskId);
     }
    @Patch(':id')
-    updateTask(@Param('id') taskId:string,@Body('title') taskTitle:string,@Body('status') taskStatus:string,@Body('timeSpent') timeSpent:number){
-      this.tasksService.updateTask(taskId,taskTitle,taskStatus,timeSpent)
+    async updateTask(@Param('id') taskId:string,@Body('title') taskTitle:string,@Body('status') taskStatus:string,@Body('timeSpent') timeSpent:number){
+      await this.tasksService.updateTask(taskId,taskTitle,taskStatus,timeSpent)
       return null;
     }
     @Delete(':id')
-    deleteTask(@Param ('id') taskId:string){
-        this.tasksService.deleteTask(taskId);
+    async deleteTask(@Param ('id') taskId:string){
+      await  this.tasksService.deleteTask(taskId);
         return null;
     }
 

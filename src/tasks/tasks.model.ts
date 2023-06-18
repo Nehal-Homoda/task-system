@@ -8,7 +8,7 @@ status:{type:String,required:true},
 
 
 //why using interface instead of class and remove constructor
-export interface Tasks{
+export interface Tasks extends mongoose.Document{
  id:string;
  title:string ;
   status:string;

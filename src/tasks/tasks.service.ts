@@ -9,7 +9,7 @@ import { InjectModel } from "@nestjs/mongoose";
 export class taskService {
 
     //an array object from model
-    tasks: Tasks[] = [];
+    //tasks: Tasks[] = [];
 
 
     //to inject mongoose model
@@ -27,8 +27,8 @@ export class taskService {
         // this.tasks.push(newTask);
       
         //save provided by mongoose
-       const x=await newTask.save();
-       console.log(x);
+       await newTask.save();
+       
     }
     async getTasks() {
         //as array a refernce type and by that we return a pointer to array not copy
@@ -41,19 +41,19 @@ export class taskService {
     }
 
 
-    getSingleTask(taskId: string) {
-        const task = this.findTask(taskId);
+    async getSingleTask(taskId: string) {
+        const task =await this.findTask(taskId);
         return { ...task };
 
     }
 
 
-    updateTask(taskId: string, title: string, status: string, timeSpent: number) {
+    async updateTask(taskId: string, title: string, status: string, timeSpent: number) {
         //why const[]   59
-        const [task,index] = this.findTask(taskId);
-
+        const updatedTask = await this.findTask(taskId);
+            
         //create new task with new data coming in body
-        const updatedTask={...task};
+        //const updatedTask={...task};
         if(title){
             updatedTask.title=title;
         }
@@ -63,27 +63,36 @@ export class taskService {
         if(timeSpent){
             updatedTask.timeSpent=timeSpent;
         }
-        this.tasks[index]=updatedTask;
+        //this.tasks[index]=updatedTask;
+        updatedTask.save();
     }
 
 
 
-    deleteTask(id:string){
+    async deleteTask(taskId:string){
         //why [1]
-        const index=this.findTask(id)[1];
-         this.tasks.splice(index,1);
-    }
+        // const index=this.findTask(id)[1];
+        //  this.tasks.splice(index,1);
+    //    const result=
+    await this.taskModel.deleteOne({_id:taskId}).exec();
+    
+    //    if(result.n===0){
+    //    throw new NotFoundException('could not find task')
+    //  }  
+ }
 
 
 
 
-    private findTask(id: string) :[Tasks,number]{
-        const taskIndex = this.tasks.findIndex((task) => task.id == id);
-        const task=this.tasks[taskIndex];
-        if (!taskIndex) {
+   async  findTask(id: string) :Promise<Tasks>{
+    let task;
+    try{
+         task= await this.taskModel.findById(id);
+    }catch(error){
+        
             throw new NotFoundException('could not find task')
         }
-        return [task,taskIndex];
+        return task;
 
     }
 }
