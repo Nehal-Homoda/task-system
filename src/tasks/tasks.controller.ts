@@ -43,5 +43,14 @@ export class taskController {
       await  this.tasksService.deleteTask(taskId);
         return null;
     }
+    @Get('search/byTitle/:title')
+    async searchByTitle(@Param ('title') title:string){
+        return await this.tasksService.searchByTitle(title);
+        
+    }
+    @Get('search/byUserId/:userId')
+    async searchByUserId(@Param('userId') userId:string){
+        return await this.tasksService.searchByUserId(userId);
+    }
 
 }

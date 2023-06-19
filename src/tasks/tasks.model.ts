@@ -4,6 +4,7 @@ export const TaskShema=new mongoose.Schema({
 title:{type:String,required:true},
 status:{type:String,required:true},
  timeSpent:{type:Number,required:true},
+ userId:{type:String,equired:true}
 });
 
 
