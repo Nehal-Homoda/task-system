@@ -1,18 +1,24 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
+import { LocalAuthGuard } from './auth/local-auth.guard';
+import { AuthService } from './auth/auth.service';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
-//decorator for class
-//  if i write  something in controller only request that start with /tasks would reach controller
-//we filter request by @controller
 @Controller()
 export class AppController {
+  constructor(
+    private readonly appService: AppService,
+    private readonly authService: AuthService,
+  ) {}
 
-  //dependency injection 
-  constructor(private readonly appService: AppService) {}
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  login(@Request() req): any {
+    return this.authService.login(req.user);
+  }
 
-  //decorator for method
-  //only empty path can reach to this method
-  @Get()
+  @UseGuards(JwtAuthGuard)
+  @Get('protected')
   getHello(): string {
     return this.appService.getHello();
   }
